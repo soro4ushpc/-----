@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جابلی - پورتال شغلی</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #007bff;
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        .alert {
+            margin-top: 10px;
+        }
+        #jobList .card-body {
+            text-align: right;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .form-control {
+            text-align: right;
+        }
+        .list-group-item {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">جابلی</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('home')">خانه</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('jobs')">شغل‌ها</a>
+                    </li>
+                    <li class="nav-item hidden" id="employerNav">
+                        <a class="nav-link" href="#" onclick="showSection('postJob')">ثبت شغل</a>
+                    </li>
+                    <li class="nav-item hidden" id="seekerNav">
+                        <a class="nav-link" href="#" onclick="showSection('myApplications')">درخواست‌های من</a>
+                    </li>
+                    <li class="nav-item hidden" id="adminNav">
+                        <a class="nav-link" href="#" onclick="showSection('adminPanel')">پنل ادمین</a>
+                    </li>
+                    <li class="nav-item hidden" id="messagesNav">
+                        <a class="nav-link" href="#" onclick="showSection('messages')">پیام‌ها</a>
+                    </li>
+                    <li class="nav-item hidden" id="supportNav">
+                        <a class="nav-link" href="#" onclick="showSection('support')">پشتیبانی</a>
+                    </li>
+                    <li class="nav-item hidden" id="profileNav">
+                        <a class="nav-link" href="#" onclick="showSection('profile')">پروفایل</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item hidden" id="logoutNav">
+                        <a class="nav-link" href="#" onclick="logout()">خروج</a>
+                    </li>
+                    <li class="nav-item" id="loginNav">
+                        <a class="nav-link" href="#" onclick="showSection('login')">ورود</a>
+                    </li>
+                    <li class="nav-item" id="registerNav">
+                        <a class="nav-link" href="#" onclick="showSection('register')">ثبت‌نام</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Home Section -->
+        <div id="home" class="section">
+            <h1>خوش آمدید به جابلی</h1>
+            <p>پورتال شغلی برای اتصال کارفرمایان و کارجویان.</p>
+            <p>برای شروع، ثبت‌نام کنید یا وارد شوید.</p>
+        </div>
+
+        <!-- Login Section -->
+        <div id="login" class="section hidden">
+            <h2>ورود</h2>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label for="loginUsername" class="form-label">نام کاربری</label>
+                    <input type="text" class="form-control" id="loginUsername" required>
+                </div>
+                <div class="mb-3">
+                    <label for="loginPassword" class="form-label">رمز عبور</label>
+                    <input type="password" class="form-control" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">ورود</button>
+            </form>
+            <div id="loginAlert" class="alert alert-danger hidden"></div>
+        </div>
+
+        <!-- Register Section -->
+        <div id="register" class="section hidden">
+            <h2>ثبت‌نام</h2>
+            <form id="registerForm">
+                <div class="mb-3">
+                    <label for="regUsername" class="form-label">نام کاربری</label>
+                    <input type="text" class="form-control" id="regUsername" required>
+                </div>
+                <div class="mb-3">
+                    <label for="regPassword" class="form-label">رمز عبور</label>
+                    <input type="password" class="form-control" id="regPassword" required>
+                </div>
+                <div class="mb-3">
+                    <label for="regType" class="form-label">نوع کاربر</label>
+                    <select class="form-select" id="regType" required>
+                        <option value="">انتخاب کنید</option>
+                        <option value="employer">کارفرما</option>
+                        <option value="seeker">کارجو</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="regEmail" class="form-label">ایمیل</label>
+                    <input type="email" class="form-control" id="regEmail" required>
+                </div>
+                <div class="mb-3">
+                    <label for="regName" class="form-label">نام کامل</label>
+                    <input type="text" class="form-control" id="regName" required>
+                </div>
+                <button type="submit" class="btn btn-primary">ثبت‌نام</button>
+            </form>
+            <div id="registerAlert" class="alert alert-success hidden"></div>
+        </div>
+
+        <!-- Jobs Section -->
+        <div id="jobs" class="section hidden">
+            <h2>لیست شغل‌ها</h2>
+            <div class="mb-3">
+                <input type="text" class="form-control" id="jobSearch" placeholder="جستجو شغل...">
+            </div>
+            <div id="jobList" class="row"></div>
+        </div>
+
+        <!-- Post Job Section (Employer) -->
+        <div id="postJob" class="section hidden">
+            <h2>ثبت شغل جدید</h2>
+            <form id="postJobForm">
+                <div class="mb-3">
+                    <label for="jobTitle" class="form-label">عنوان شغل</label>
+                    <input type="text" class="form-control" id="jobTitle" required>
+                </div>
+                <div class="mb-3">
+                    <label for="jobDescription" class="form-label">توضیحات</label>
+                    <textarea class="form-control" id="jobDescription" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="jobLocation" class="form-label">مکان</label>
+                    <input type="text" class="form-control" id="jobLocation" required>
+                </div>
+                <div class="mb-3">
+                    <label for="jobSalary" class="form-label">حقوق</label>
+                    <input type="text" class="form-control" id="jobSalary">
+                </div>
+                <div class="mb-3">
+                    <label for="jobCategory" class="form-label">دسته‌بندی</label>
+                    <select class="form-select" id="jobCategory" required>
+                        <option value="">انتخاب کنید</option>
+                        <option value="IT">فناوری اطلاعات</option>
+                        <option value="Marketing">بازاریابی</option>
+                        <option value="Sales">فروش</option>
+                        <option value="Other">سایر</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">ثبت شغل</button>
+            </form>
+            <div id="postJobAlert" class="alert alert-success hidden"></div>
+        </div>
+
+        <!-- My Applications Section (Seeker) -->
+        <div id="myApplications" class="section hidden">
+            <h2>درخواست‌های من</h2>
+            <div id="applicationList"></div>
+        </div>
+
+        <!-- Messages Section -->
+        <div id="messages" class="section hidden">
+            <h2>پیام‌ها</h2>
+            <div id="messageList" class="list-group"></div>
+            <form id="sendMessageForm" class="mt-3 hidden">
+                <div class="mb-3">
+                    <label for="messageTo" class="form-label">ارسال به (نام کاربری)</label>
+                    <input type="text" class="form-control" id="messageTo" required>
+                </div>
+                <div class="mb-3">
+                    <label for="messageContent" class="form-label">محتوا</label>
+                    <textarea class="form-control" id="messageContent" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">ارسال</button>
+            </form>
+            <div id="messageAlert" class="alert alert-success hidden"></div>
+        </div>
+
+        <!-- Support Section -->
+        <div id="support" class="section hidden">
+            <h2>پشتیبانی</h2>
+            <form id="supportForm">
+                <div class="mb-3">
+                    <label for="supportMessage" class="form-label">پیام پشتیبانی</label>
+                    <textarea class="form-control" id="supportMessage" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">ارسال</button>
+            </form>
+            <div id="supportAlert" class="alert alert-success hidden"></div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div id="adminPanel" class="section hidden">
+            <h2>پنل ادمین</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">تعداد کاربران</h5>
+                    <p id="userCount"></p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">پیام‌های پشتیبانی</h5>
+                    <div id="supportMessages" class="list-group"></div>
+                </div>
+            </div>
+            <form id="replySupportForm" class="mt-3 hidden">
+                <div class="mb-3">
+                    <label for="replyTo" class="form-label">پاسخ به (نام کاربری)</label>
+                    <input type="text" class="form-control" id="replyTo" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="replyContent" class="form-label">پاسخ</label>
+                    <textarea class="form-control" id="replyContent" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">ارسال پاسخ</button>
+            </form>
+        </div>
+
+        <!-- Profile Section -->
+        <div id="profile" class="section hidden">
+            <h2>پروفایل</h2>
+            <form id="profileForm">
+                <div class="mb-3">
+                    <label for="profileName" class="form-label">نام کامل</label>
+                    <input type="text" class="form-control" id="profileName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="profileEmail" class="form-label">ایمیل</label>
+                    <input type="email" class="form-control" id="profileEmail" required>
+                </div>
+                <div class="mb-3">
+                    <label for="profileBio" class="form-label">بیوگرافی</label>
+                    <textarea class="form-control" id="profileBio"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">به‌روزرسانی</button>
+            </form>
+            <div id="profileAlert" class="alert alert-success hidden"></div>
+        </div>
+
+        <!-- Job Details Modal -->
+        <div class="modal fade" id="jobDetailsModal" tabindex="-1" aria-labelledby="jobDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="jobDetailsModalLabel">جزئیات شغل</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalJobTitle"></p>
+                        <p id="modalJobDescription"></p>
+                        <p id="modalJobLocation"></p>
+                        <p id="modalJobSalary"></p>
+                        <p id="modalJobCategory"></p>
+                        <p id="modalJobEmployer"></p>
+                        <form id="applyForm" class="hidden">
+                            <div class="mb-3">
+                                <label for="applyResume" class="form-label">رزومه (اختیاری)</label>
+                                <textarea class="form-control" id="applyResume"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success">درخواست</button>
+                        </form>
+                        <div id="applyAlert" class="alert alert-success hidden"></div>
+                        <button id="messageEmployerBtn" class="btn btn-primary hidden">پیام به کارفرما</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Details Modal for Employer -->
+        <div class="modal fade" id="applicationDetailsModal" tabindex="-1" aria-labelledby="applicationDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="applicationDetailsModalLabel">جزئیات درخواست</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalAppSeeker"></p>
+                        <p id="modalAppResume"></p>
+                        <button id="acceptAppBtn" class="btn btn-success">پذیرش</button>
+                        <button id="rejectAppBtn" class="btn btn-danger">رد</button>
+                        <button id="messageSeekerBtn" class="btn btn-primary">پیام به کارجو</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Data Structures
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+        let applications = JSON.parse(localStorage.getItem('applications')) || [];
+        let messages = JSON.parse(localStorage.getItem('messages')) || [];
+        let supportMessages = JSON.parse(localStorage.getItem('supportMessages')) || [];
+        let currentUser = null;
+
+        // Predefined Admin
+        if (!users.find(u => u.username === 'Admin')) {
+            users.push({
+                username: 'Admin',
+                password: 'admin',
+                type: 'admin',
+                email: 'admin@jobly.com',
+                name: 'ادمین',
+                bio: ''
+            });
+            saveUsers();
+        }
+
+        // Functions to save data
+        function saveUsers() {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        function saveJobs() {
+            localStorage.setItem('jobs', JSON.stringify(jobs));
+        }
+
+        function saveApplications() {
+            localStorage.setItem('applications', JSON.stringify(applications));
+        }
+
+        function saveMessages() {
+            localStorage.setItem('messages', JSON.stringify(messages));
+        }
+
+        function saveSupportMessages() {
+            localStorage.setItem('supportMessages', JSON.stringify(supportMessages));
+        }
+
+        // Show Section
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            if (sectionId === 'jobs') loadJobs();
+            if (sectionId === 'myApplications') loadMyApplications();
+            if (sectionId === 'messages') loadMessages();
+            if (sectionId === 'adminPanel') loadAdminPanel();
+            if (sectionId === 'profile') loadProfile();
+        }
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const user = users.find(u => u.username === username && u.password === password);
+            if (user) {
+                currentUser = user;
+                updateNav();
+                showSection('home');
+                document.getElementById('loginAlert').classList.add('hidden');
+            } else {
+                document.getElementById('loginAlert').textContent = 'نام کاربری یا رمز عبور اشتباه است.';
+                document.getElementById('loginAlert').classList.remove('hidden');
+            }
+        });
+
+        // Register
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+            const type = document.getElementById('regType').value;
+            const email = document.getElementById('regEmail').value;
+            const name = document.getElementById('regName').value;
+            if (users.find(u => u.username === username)) {
+                document.getElementById('registerAlert').textContent = 'نام کاربری تکراری است.';
+                document.getElementById('registerAlert').classList.remove('hidden');
+                document.getElementById('registerAlert').classList.add('alert-danger');
+                document.getElementById('registerAlert').classList.remove('alert-success');
+                return;
+            }
+            users.push({ username, password, type, email, name, bio: '' });
+            saveUsers();
+            document.getElementById('registerAlert').textContent = 'ثبت‌نام موفق!';
+            document.getElementById('registerAlert').classList.remove('hidden');
+            document.getElementById('registerAlert').classList.add('alert-success');
+            document.getElementById('registerAlert').classList.remove('alert-danger');
+        });
+
+        // Logout
+        function logout() {
+            currentUser = null;
+            updateNav();
+            showSection('home');
+        }
+
+        // Update Navigation
+        function updateNav() {
+            if (currentUser) {
+                document.getElementById('loginNav').classList.add('hidden');
+                document.getElementById('registerNav').classList.add('hidden');
+                document.getElementById('logoutNav').classList.remove('hidden');
+                document.getElementById('profileNav').classList.remove('hidden');
+                document.getElementById('messagesNav').classList.remove('hidden');
+                document.getElementById('supportNav').classList.remove('hidden');
+                if (currentUser.type === 'employer') {
+                    document.getElementById('employerNav').classList.remove('hidden');
+                    document.getElementById('seekerNav').classList.add('hidden');
+                    document.getElementById('adminNav').classList.add('hidden');
+                } else if (currentUser.type === 'seeker') {
+                    document.getElementById('seekerNav').classList.remove('hidden');
+                    document.getElementById('employerNav').classList.add('hidden');
+                    document.getElementById('adminNav').classList.add('hidden');
+                } else if (currentUser.type === 'admin') {
+                    document.getElementById('adminNav').classList.remove('hidden');
+                    document.getElementById('employerNav').classList.add('hidden');
+                    document.getElementById('seekerNav').classList.add('hidden');
+                }
+            } else {
+                document.getElementById('loginNav').classList.remove('hidden');
+                document.getElementById('registerNav').classList.remove('hidden');
+                document.getElementById('logoutNav').classList.add('hidden');
+                document.getElementById('profileNav').classList.add('hidden');
+                document.getElementById('messagesNav').classList.add('hidden');
+                document.getElementById('supportNav').classList.add('hidden');
+                document.getElementById('employerNav').classList.add('hidden');
+                document.getElementById('seekerNav').classList.add('hidden');
+                document.getElementById('adminNav').classList.add('hidden');
+            }
+        }
+
+        // Load Jobs
+        function loadJobs(filter = '') {
+            const jobList = document.getElementById('jobList');
+            jobList.innerHTML = '';
+            jobs.filter(job => job.title.toLowerCase().includes(filter.toLowerCase()) || job.description.toLowerCase().includes(filter.toLowerCase())).forEach(job => {
+                const col = document.createElement('div');
+                col.className = 'col-md-4';
+                const card = document.createElement('div');
+                card.className = 'card';
+                const body = document.createElement('div');
+                body.className = 'card-body';
+                body.innerHTML = `
+                    <h5 class="card-title">${job.title}</h5>
+                    <p class="card-text">${job.description.substring(0, 100)}...</p>
+                    <p>مکان: ${job.location}</p>
+                    <p>حقوق: ${job.salary || 'نامشخص'}</p>
+                    <button class="btn btn-primary" onclick="showJobDetails('${job.id}')">جزئیات</button>
+                `;
+                if (currentUser && currentUser.type === 'employer' && job.employer === currentUser.username) {
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn btn-danger ms-2';
+                    deleteBtn.textContent = 'حذف';
+                    deleteBtn.onclick = () => deleteJob(job.id);
+                    body.appendChild(deleteBtn);
+
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'btn btn-warning ms-2';
+                    editBtn.textContent = 'ویرایش';
+                    editBtn.onclick = () => editJob(job.id);
+                    body.appendChild(editBtn);
+                }
+                card.appendChild(body);
+                col.appendChild(card);
+                jobList.appendChild(col);
+            });
+        }
+
+        // Search Jobs
+        document.getElementById('jobSearch').addEventListener('input', function(e) {
+            loadJobs(e.target.value);
+        });
+
+        // Show Job Details
+        function showJobDetails(jobId) {
+            const job = jobs.find(j => j.id === jobId);
+            if (!job) return;
+            document.getElementById('modalJobTitle').textContent = `عنوان: ${job.title}`;
+            document.getElementById('modalJobDescription').textContent = `توضیحات: ${job.description}`;
+            document.getElementById('modalJobLocation').textContent = `مکان: ${job.location}`;
+            document.getElementById('modalJobSalary').textContent = `حقوق: ${job.salary || 'نامشخص'}`;
+            document.getElementById('modalJobCategory').textContent = `دسته‌بندی: ${job.category}`;
+            document.getElementById('modalJobEmployer').textContent = `کارفرما: ${job.employer}`;
+            const applyForm = document.getElementById('applyForm');
+            const messageBtn = document.getElementById('messageEmployerBtn');
+            if (currentUser && currentUser.type === 'seeker') {
+                applyForm.classList.remove('hidden');
+                messageBtn.classList.remove('hidden');
+                applyForm.onsubmit = (e) => {
+                    e.preventDefault();
+                    applyForJob(jobId);
+                };
+                messageBtn.onclick = () => sendMessageTo(job.employer);
+            } else {
+                applyForm.classList.add('hidden');
+                messageBtn.classList.add('hidden');
+            }
+            const modal = new bootstrap.Modal(document.getElementById('jobDetailsModal'));
+            modal.show();
+        }
+
+        // Apply for Job
+        function applyForJob(jobId) {
+            const resume = document.getElementById('applyResume').value;
+            applications.push({
+                id: Date.now().toString(),
+                jobId,
+                seeker: currentUser.username,
+                resume,
+                status: 'pending'
+            });
+            saveApplications();
+            document.getElementById('applyAlert').textContent = 'درخواست ارسال شد!';
+            document.getElementById('applyAlert').classList.remove('hidden');
+            setTimeout(() => bootstrap.Modal.getInstance(document.getElementById('jobDetailsModal')).hide(), 2000);
+        }
+
+        // Post Job
+        document.getElementById('postJobForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!currentUser || currentUser.type !== 'employer') return;
+            const job = {
+                id: Date.now().toString(),
+                title: document.getElementById('jobTitle').value,
+                description: document.getElementById('jobDescription').value,
+                location: document.getElementById('jobLocation').value,
+                salary: document.getElementById('jobSalary').value,
+                category: document.getElementById('jobCategory').value,
+                employer: currentUser.username
+            };
+            jobs.push(job);
+            saveJobs();
+            document.getElementById('postJobForm').reset();
+            document.getElementById('postJobAlert').textContent = 'شغل ثبت شد!';
+            document.getElementById('postJobAlert').classList.remove('hidden');
+        });
+
+        // Delete Job
+        function deleteJob(jobId) {
+            jobs = jobs.filter(j => j.id !== jobId);
+            saveJobs();
+            loadJobs();
+        }
+
+        // Edit Job
+        function editJob(jobId) {
+            const job = jobs.find(j => j.id === jobId);
+            if (!job) return;
+            document.getElementById('jobTitle').value = job.title;
+            document.getElementById('jobDescription').value = job.description;
+            document.getElementById('jobLocation').value = job.location;
+            document.getElementById('jobSalary').value = job.salary;
+            document.getElementById('jobCategory').value = job.category;
+            showSection('postJob');
+            document.getElementById('postJobForm').onsubmit = (e) => {
+                e.preventDefault();
+                job.title = document.getElementById('jobTitle').value;
+                job.description = document.getElementById('jobDescription').value;
+                job.location = document.getElementById('jobLocation').value;
+                job.salary = document.getElementById('jobSalary').value;
+                job.category = document.getElementById('jobCategory').value;
+                saveJobs();
+                document.getElementById('postJobForm').reset();
+                document.getElementById('postJobForm').onsubmit = postJobSubmit; // Reset to original
+                document.getElementById('postJobAlert').textContent = 'شغل ویرایش شد!';
+                document.getElementById('postJobAlert').classList.remove('hidden');
+            };
+        }
+
+        const postJobSubmit = document.getElementById('postJobForm').onsubmit; // Save original submit
+
+        // Load My Applications (Seeker)
+        function loadMyApplications() {
+            const list = document.getElementById('applicationList');
+            list.innerHTML = '';
+            applications.filter(app => app.seeker === currentUser.username).forEach(app => {
+                const job = jobs.find(j => j.id === app.jobId);
+                if (!job) return;
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-body">
+                        <h5 class="card-title">${job.title}</h5>
+                        <p>وضعیت: ${app.status}</p>
+                        <button class="btn btn-primary" onclick="showMessageTo('${job.employer}')">پیام به کارفرما</button>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // Load Messages
+        function loadMessages() {
+            const list = document.getElementById('messageList');
+            list.innerHTML = '';
+            messages.filter(msg => msg.from === currentUser.username || msg.to === currentUser.username).forEach(msg => {
+                const item = document.createElement('div');
+                item.className = 'list-group-item';
+                item.innerHTML = `
+                    <strong>از: ${msg.from}</strong> به: ${msg.to}<br>
+                    ${msg.content}<br>
+                    <small>${new Date(msg.timestamp).toLocaleString('fa-IR')}</small>
+                `;
+                list.appendChild(item);
+            });
+            document.getElementById('sendMessageForm').classList.remove('hidden');
+        }
+
+        // Send Message
+        document.getElementById('sendMessageForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const to = document.getElementById('messageTo').value;
+            const content = document.getElementById('messageContent').value;
+            if (!users.find(u => u.username === to)) {
+                alert('کاربر یافت نشد.');
+                return;
+            }
+            messages.push({
+                from: currentUser.username,
+                to,
+                content,
+                timestamp: Date.now()
+            });
+            saveMessages();
+            document.getElementById('sendMessageForm').reset();
+            loadMessages();
+            document.getElementById('messageAlert').textContent = 'پیام ارسال شد!';
+            document.getElementById('messageAlert').classList.remove('hidden');
+        });
+
+        // Send Message To
+        function sendMessageTo(username) {
+            showSection('messages');
+            document.getElementById('messageTo').value = username;
+        }
+
+        // Support Form
+        document.getElementById('supportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const content = document.getElementById('supportMessage').value;
+            supportMessages.push({
+                from: currentUser.username,
+                content,
+                timestamp: Date.now(),
+                reply: ''
+            });
+            saveSupportMessages();
+            document.getElementById('supportForm').reset();
+            document.getElementById('supportAlert').textContent = 'پیام ارسال شد!';
+            document.getElementById('supportAlert').classList.remove('hidden');
+        });
+
+        // Load Admin Panel
+        function loadAdminPanel() {
+            if (!currentUser || currentUser.type !== 'admin') return;
+            document.getElementById('userCount').textContent = `تعداد کاربران: ${users.length}`;
+            const supportList = document.getElementById('supportMessages');
+            supportList.innerHTML = '';
+            supportMessages.forEach((msg, index) => {
+                const item = document.createElement('div');
+                item.className = 'list-group-item';
+                item.innerHTML = `
+                    <strong>از: ${msg.from}</strong><br>
+                    ${msg.content}<br>
+                    <small>${new Date(msg.timestamp).toLocaleString('fa-IR')}</small><br>
+                    پاسخ: ${msg.reply || 'بدون پاسخ'}<br>
+                    <button class="btn btn-primary btn-sm" onclick="replyToSupport(${index})">پاسخ</button>
+                `;
+                supportList.appendChild(item);
+            });
+        }
+
+        // Reply to Support
+        function replyToSupport(index) {
+            const msg = supportMessages[index];
+            document.getElementById('replyTo').value = msg.from;
+            document.getElementById('replySupportForm').classList.remove('hidden');
+            document.getElementById('replySupportForm').onsubmit = (e) => {
+                e.preventDefault();
+                const reply = document.getElementById('replyContent').value;
+                msg.reply = reply;
+                saveSupportMessages();
+                // Send reply as message
+                messages.push({
+                    from: 'Admin',
+                    to: msg.from,
+                    content: `پاسخ پشتیبانی: ${reply}`,
+                    timestamp: Date.now()
+                });
+                saveMessages();
+                document.getElementById('replySupportForm').reset();
+                document.getElementById('replySupportForm').classList.add('hidden');
+                loadAdminPanel();
+            };
+        }
+
+        // Load Profile
+        function loadProfile() {
+            document.getElementById('profileName').value = currentUser.name;
+            document.getElementById('profileEmail').value = currentUser.email;
+            document.getElementById('profileBio').value = currentUser.bio || '';
+        }
+
+        // Update Profile
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            currentUser.name = document.getElementById('profileName').value;
+            currentUser.email = document.getElementById('profileEmail').value;
+            currentUser.bio = document.getElementById('profileBio').value;
+            const index = users.findIndex(u => u.username === currentUser.username);
+            users[index] = currentUser;
+            saveUsers();
+            document.getElementById('profileAlert').textContent = 'پروفایل به‌روزرسانی شد!';
+            document.getElementById('profileAlert').classList.remove('hidden');
+        });
+
+        // Show Applications for Employer (integrated in jobs)
+        // But for completeness, when employer views their job, show applications
+        // Modify showJobDetails for employer
+        let originalShowJobDetails = showJobDetails;
+        showJobDetails = function(jobId) {
+            originalShowJobDetails(jobId);
+            const job = jobs.find(j => j.id === jobId);
+            if (currentUser && currentUser.type === 'employer' && job.employer === currentUser.username) {
+                const modalBody = document.querySelector('#jobDetailsModal .modal-body');
+                const appList = document.createElement('div');
+                appList.innerHTML = '<h6>درخواست‌ها:</h6>';
+                applications.filter(app => app.jobId === jobId).forEach(app => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn btn-info btn-sm me-2';
+                    btn.textContent = `درخواست از ${app.seeker}`;
+                    btn.onclick = () => showApplicationDetails(app.id);
+                    appList.appendChild(btn);
+                });
+                modalBody.appendChild(appList);
+            }
+        };
+
+        // Show Application Details
+        function showApplicationDetails(appId) {
+            const app = applications.find(a => a.id === appId);
+            if (!app) return;
+            document.getElementById('modalAppSeeker').textContent = `کارجو: ${app.seeker}`;
+            document.getElementById('modalAppResume').textContent = `رزومه: ${app.resume || 'بدون رزومه'}`;
+            document.getElementById('acceptAppBtn').onclick = () => {
+                app.status = 'accepted';
+                saveApplications();
+                bootstrap.Modal.getInstance(document.getElementById('applicationDetailsModal')).hide();
+            };
+            document.getElementById('rejectAppBtn').onclick = () => {
+                app.status = 'rejected';
+                saveApplications();
+                bootstrap.Modal.getInstance(document.getElementById('applicationDetailsModal')).hide();
+            };
+            document.getElementById('messageSeekerBtn').onclick = () => {
+                sendMessageTo(app.seeker);
+                bootstrap.Modal.getInstance(document.getElementById('applicationDetailsModal')).hide();
+            };
+            const modal = new bootstrap.Modal(document.getElementById('applicationDetailsModal'));
+            modal.show();
+        }
+
+        // Initial Load
+        updateNav();
+        showSection('home');
+    </script>
+</body>
+</html>
